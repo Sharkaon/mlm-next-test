@@ -1,18 +1,17 @@
 'use server';
 
 import OpenAI from "openai";
-import { ChatCompletionAssistantMessageParam, ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam } from "openai/resources/index.mjs";
-import { ChatCompletionMessageParam } from "openai/src/resources/index.js";
 
-function getMessagesWithRole(messages: string[]): ChatCompletionMessageParam[] {
-  const initialMessage: ChatCompletionSystemMessageParam = {
+function getMessagesWithRole(messages: string[]): any[] {
+  const initialMessage = {
     content: messages.shift()!,
     role: 'system',
-  }
+  } as const;
 
-  const nextMessages: Array<
-    ChatCompletionUserMessageParam | ChatCompletionAssistantMessageParam
-  > = messages.map(
+  const nextMessages: Array<{
+    content: string,
+    role: string
+  }> = messages.map(
     (message, index) => ({
       content: message,
       role: index % 2 == 0 ? 'user' : 'assistant'
@@ -33,8 +32,6 @@ export async function getCompletion(currentState: string, formData: FormData): P
   const messages = formData.getAll('message') as string[];
 
   const messagesWithRole = getMessagesWithRole(messages);
-
-  console.log(messagesWithRole);
 
   const completion = await openai.chat.completions.create({
     messages: messagesWithRole,
