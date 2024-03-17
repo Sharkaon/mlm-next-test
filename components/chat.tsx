@@ -22,6 +22,7 @@ export default function Chat(props: ChatProps) {
       {messages.map(
         (message, index) =>
           <textarea
+            key={index}
             name={`message`}
             defaultValue={message}
             className={`text-black w-full text-sm mb-3 rounded`}
