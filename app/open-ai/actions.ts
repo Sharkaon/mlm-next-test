@@ -26,7 +26,7 @@ function getMessagesWithRole(messages: string[]): any[] {
 
 export async function getCompletion(currentState: string, formData: FormData): Promise<string> {
   const openai = new OpenAI({
-    apiKey: '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',
+    apiKey: process.env.OPEN_AI_KEY, 
   });
 
   const messages = formData.getAll('message') as string[];
