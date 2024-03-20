@@ -14,7 +14,7 @@ function getMessagesWithRole(messages: string[]): any[] {
   }> = messages.map(
     (message, index) => ({
       content: message,
-      role: index % 2 == 0 ? 'user' : 'assistant'
+      role: index % 2 !== 0 ? 'user' : 'assistant'
     })
   );
 
