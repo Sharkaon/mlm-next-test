@@ -1,16 +1,19 @@
 import Chat from '@/components/chat';
-import messages, { MessageInterface } from "@/messages";
+import messages from "@/messages";
+import { getChatAnswer } from './actions';
 
 export default function GeminiExample() {
-  const googleMessages: MessageInterface = messages.map(
-    (message) => message.role === 'system' ? {
-      ...message,
-      role: 'assistant' as const,
-    } : message
-  );
+  const googleFirstMessage = {
+    content: messages[0].content,
+    role: 'model' as const
+  };
 
   return <>
     Gemini<br/>
-    <Chat firstMessage={googleMessages[0]} userDefaultMessage={googleMessages[1].content} />
+    <Chat
+      firstMessage={googleFirstMessage}
+      userDefaultMessage={messages[1].content}
+      action={getChatAnswer}
+    />
   </>
 }

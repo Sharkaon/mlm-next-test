@@ -1,6 +1,6 @@
 export type MessageInterface = {
   content: string;
-  role: 'user' | 'system' | 'assistent';
+  role: 'user' | 'system' | 'assistent' | 'model';
 }
 
 const messages: MessageInterface[] = [

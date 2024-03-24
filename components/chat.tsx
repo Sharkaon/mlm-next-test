@@ -8,16 +8,16 @@ import { useFormState, useFormStatus } from "react-dom";
 export type ChatProps = {
   firstMessage: MessageInterface;
   userDefaultMessage?: string;
+  action: (currentState: string, formData: FormData) => Promise<string>;
 }
 
 export default function Chat(props: ChatProps) {
-  const [state, formAction] = useFormState(getCompletion, '');
+  const [state, formAction] = useFormState(props.action, '');
   const [messages, setMessages] = useState([props.userDefaultMessage ?? '']);
   const [waitingResponse, setWaitingRespone] = useState(false);
   const formStatus = useFormStatus();
 
   useEffect(() => {
-    console.log(state);
     if (!waitingResponse) return;
 
     addResult(state);
