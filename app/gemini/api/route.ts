@@ -1,9 +1,11 @@
-import { getChatAnswer } from "../actions";
+import { messagesValidator } from "@/schema";
+import { getAnswerFromModel } from "../actions";
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
-  const answer = await getChatAnswer('', await request.formData());
+  const messages = messagesValidator.parse(await request.json());
+  const answer = await getAnswerFromModel(messages);
 
   return Response.json({ answer });
 }

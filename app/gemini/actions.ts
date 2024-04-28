@@ -20,23 +20,27 @@ function getMessagesWithRole(messages: string[]) {
 }
 
 export async function getChatAnswer(currentState: string, formData: FormData): Promise<string> {
-  if (!process.env.GOOGLE_GEMINI_KEY) throw new Error('No Gemini Key in envs');
-
-  const gemini = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_KEY).getGenerativeModel({ model: 'gemini-pro' });
-
   const messages = formData.getAll('message');
   const validatedMessages = messagesValidator.parse(messages);
+
+   return getAnswerFromModel(validatedMessages); 
+}
+
+export async function getAnswerFromModel(messages: string[]): Promise<string> {
+  if (!process.env.GOOGLE_GEMINI_KEY) throw new Error('No Gemini Key in envs');
 
   const { 
     messagesWithRole,
     messageToSend,
-  } = getMessagesWithRole(validatedMessages);
+  } = getMessagesWithRole(messages);
+
+  const gemini = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_KEY).getGenerativeModel({ model: 'gemini-pro' });
 
   const chat = gemini.startChat({ history: messagesWithRole });
   const result = await chat.sendMessage(messageToSend ?? '');
 
   const text = result.response.text();
 
-  return text; 
+  return text;
 }
 

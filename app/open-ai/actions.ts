@@ -29,14 +29,18 @@ function getMessagesWithRole(messages: string[]): {
 }
 
 export async function getCompletion(currentState: string, formData: FormData): Promise<string> {
+  const messages = formData.getAll('message');
+  const validatedMessages = messagesValidator.parse(messages);
+
+  return getCompletionFromModel(validatedMessages); 
+}
+
+export async function getCompletionFromModel(messages: string[]): Promise<string> {
   const openai = new OpenAI({
     apiKey: process.env.OPEN_AI_KEY, 
   });
 
-  const messages = formData.getAll('message');
-  const validatedMessages = messagesValidator.parse(messages);
-
-  const messagesWithRole = getMessagesWithRole(validatedMessages);
+  const messagesWithRole = getMessagesWithRole(messages);
 
   const completion = await openai.chat.completions.create({
     messages: messagesWithRole,
@@ -45,5 +49,5 @@ export async function getCompletion(currentState: string, formData: FormData): P
 
   const message = completion.choices[0].message.content ?? '';
 
-  return message; 
+  return message;
 }
