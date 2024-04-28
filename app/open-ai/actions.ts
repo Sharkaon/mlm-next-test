@@ -2,7 +2,10 @@
 
 import OpenAI from "openai";
 
-function getMessagesWithRole(messages: string[]): any[] {
+function getMessagesWithRole(messages: string[]): {
+  content: string;
+  role: 'system' | 'user' | 'assistant'
+}[] {
   const initialMessage = {
     content: messages.shift()!,
     role: 'system',
@@ -10,11 +13,11 @@ function getMessagesWithRole(messages: string[]): any[] {
 
   const nextMessages: Array<{
     content: string,
-    role: string
+    role: 'user' | 'assistant' 
   }> = messages.map(
     (message, index) => ({
       content: message,
-      role: index % 2 !== 0 ? 'user' : 'assistant'
+      role: index % 2 !== 0 ? 'user' as const : 'assistant' as const
     })
   );
 
