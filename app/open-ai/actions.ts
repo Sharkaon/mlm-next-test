@@ -1,5 +1,6 @@
 'use server';
 
+import { messagesValidator } from "@/schema";
 import OpenAI from "openai";
 
 function getMessagesWithRole(messages: string[]): {
@@ -32,9 +33,10 @@ export async function getCompletion(currentState: string, formData: FormData): P
     apiKey: process.env.OPEN_AI_KEY, 
   });
 
-  const messages = formData.getAll('message') as string[];
+  const messages = formData.getAll('message');
+  const validatedMessages = messagesValidator.parse(messages);
 
-  const messagesWithRole = getMessagesWithRole(messages);
+  const messagesWithRole = getMessagesWithRole(validatedMessages);
 
   const completion = await openai.chat.completions.create({
     messages: messagesWithRole,

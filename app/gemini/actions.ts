@@ -1,5 +1,6 @@
 'use server';
 
+import { messagesValidator } from "@/schema";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function getMessagesWithRole(messages: string[]) {
@@ -23,12 +24,13 @@ export async function getChatAnswer(currentState: string, formData: FormData): P
 
   const gemini = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_KEY).getGenerativeModel({ model: 'gemini-pro' });
 
-  const messages = formData.getAll('message') as string[];
+  const messages = formData.getAll('message');
+  const validatedMessages = messagesValidator.parse(messages);
 
   const { 
     messagesWithRole,
     messageToSend,
-  } = getMessagesWithRole(messages);
+  } = getMessagesWithRole(validatedMessages);
 
   const chat = gemini.startChat({ history: messagesWithRole });
   const result = await chat.sendMessage(messageToSend ?? '');
